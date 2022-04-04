@@ -6,9 +6,7 @@ var app = express();
 app.get('*', function (req, res) {
     ID = req.params['0'].slice(1)
     if (!fs.existsSync(__dirname + "/boards/" + ID + ".svg")) {
-        console.log("generating board")
         exec("python main.py -o ./boards/".concat(ID).concat(".svg -i ").concat(ID), (error, stdout, stderr) => {
-            console.log(error, stdout, stderr)
             res.sendFile(__dirname + "/boards/" + ID + ".svg");
         });
     }
