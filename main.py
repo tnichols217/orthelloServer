@@ -2,6 +2,10 @@ import svgwrite
 import sys
 import argparse
 
+
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPM
+
 class const:
     light = svgwrite.rgb(220, 220, 220)
     dark = svgwrite.rgb(20, 20, 20)
@@ -51,6 +55,7 @@ parser.add_argument("-i", "--input", default="", help="Your input string.")
 parser.add_argument("-o", "--output", default="test.svg", help="Your destination output file.")
 # parser.add_argument("-s", "--string", help="Output board id string to specified file.")
 # parser.add_argument("-v", "--verbose", dest='verbose', action='store_true', help="Verbose mode.")
+parser.add_argument("-p", "--png", dest='png', action='store_true', help="Generate png file as well")
 args = parser.parse_args(args)
 
 # draw board
@@ -108,3 +113,7 @@ cc = " ".join([str(i) for i in cc])
 dwg.add(dwg.text(cc, (30, 20)))
 
 dwg.save()
+
+if args.png:
+    drawing = svg2rlg(args.output)
+    renderPM.drawToFile(drawing, args.output + ".png", fmt='PNG')
