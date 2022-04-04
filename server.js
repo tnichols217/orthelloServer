@@ -5,6 +5,10 @@ var app = express();
 
 app.get('*', function (req, res) {
     ID = req.params['0'].slice(1)
+    if (ID.length < 2) {
+        res.send("See if you can figure out how to use this thing :p")
+        return
+    }
     if (!fs.existsSync(__dirname + "/boards/" + ID + ".svg")) {
         exec("python main.py -o ./boards/".concat(ID).concat(".svg -i ").concat(ID), (error, stdout, stderr) => {
             res.sendFile(__dirname + "/boards/" + ID + ".svg");
