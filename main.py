@@ -53,13 +53,16 @@ def raycast(bo, a, b):
 
 args = sys.argv[1:]
 parser = argparse.ArgumentParser(description="Parses command.")
-parser.add_argument("-i", "--input", default="", help="Your input string.")
+parser.add_argument("-i", "--input", default="", nargs='?', help="Your input string.")
 parser.add_argument("-o", "--output", default="test.svg", help="Your destination output file.")
 # parser.add_argument("-s", "--string", help="Output board id string to specified file.")
 # parser.add_argument("-v", "--verbose", dest='verbose', action='store_true', help="Verbose mode.")
 parser.add_argument("-p", "--png", dest='png', action='store_true', help="Generate png file as well")
 parser.add_argument("-l", "--link", dest='link', action='store_true', help="Create links in the svg")
 args = parser.parse_args(args)
+
+if args.input == None:
+    args.input = ""
 
 # draw board
 
