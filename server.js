@@ -12,14 +12,14 @@ app.get('*', function (req, res) {
     if (ID == "favicon.ico") {
         res.send(__dirname + "favicon.ico")
     }
-    if (!fs.existsSync(__dirname + "/boards/" + ID + ".svg.png")) {
-        exec("python main.py -p -o ./boards/".concat(ID).concat(".svg -i ").concat(ID), (error, stdout, stderr) => {
-            res.sendFile(__dirname + "/boards/" + ID + ".svg.png");
+    if (!fs.existsSync(__dirname + "/boards/" + ID + ".svg")) {
+        exec("python main.py -l -o ./boards/".concat(ID).concat(".svg -i ").concat(ID), (error, stdout, stderr) => {
+            res.sendFile(__dirname + "/boards/" + ID + ".svg");
         });
     }
     else {
 
-        res.sendFile(__dirname + "/boards/" + ID + ".svg.png");
+        res.sendFile(__dirname + "/boards/" + ID + ".svg");
     }
 })
 

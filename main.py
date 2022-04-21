@@ -6,6 +6,8 @@ import argparse
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
 
+import xml.etree.ElementTree as ET
+
 class const:
     light = svgwrite.rgb(220, 220, 220)
     dark = svgwrite.rgb(20, 20, 20)
@@ -56,16 +58,15 @@ parser.add_argument("-o", "--output", default="test.svg", help="Your destination
 # parser.add_argument("-s", "--string", help="Output board id string to specified file.")
 # parser.add_argument("-v", "--verbose", dest='verbose', action='store_true', help="Verbose mode.")
 parser.add_argument("-p", "--png", dest='png', action='store_true', help="Generate png file as well")
+parser.add_argument("-l", "--link", dest='link', action='store_true', help="Create links in the svg")
 args = parser.parse_args(args)
 
 # draw board
 
-print(args.output)
-
 dwg = svgwrite.Drawing(args.output, size=(const.size * const.mult, const.size * const.mult), profile='full')
 for i in range(const.size):
     for j in range(const.size):
-        dwg.add(dwg.rect((i*const.mult, j*const.mult), ((i+1)*const.mult, (j+1)*const.mult), fill=const.green, stroke=const.stroke_color, stroke_width=const.stroke))
+        dwg.add(dwg.rect((i*const.mult, j*const.mult), (const.mult, const.mult), fill=const.green, stroke=const.stroke_color, stroke_width=const.stroke))
 
 for i in range(const.size):
     dwg.add(dwg.text(const.d1[i], (i * const.mult + 80, 20)))
@@ -117,3 +118,27 @@ dwg.save()
 if args.png:
     drawing = svg2rlg(args.output)
     renderPM.drawToFile(drawing, args.output + ".png", fmt='PNG')
+
+if args.link:
+    c = []
+    for i in range(const.size):
+        for j in range(const.size):
+            if b[i][j] != 0:
+                c.append((i, j))
+    tree = ET.parse(args.output)
+    ET.register_namespace("", "http://www.w3.org/2000/svg")
+    root = tree.getroot()
+    root.set('xmlns:ev', "http://www.w3.org/2001/xml-events")
+    root.set('xmlns:xlink', "http://www.w3.org/1999/xlink")
+    ii = 0
+    for i in range(len(root)):
+        if root[i].tag.endswith("circle"):
+            d = root[i]
+            aa = ET.Element("a")
+            aa.set("xlink:href", "./" + str(const.d1[c[ii][0]]) + str(const.d2[c[ii][1]]))
+            aa.append(d)
+            root[i] = aa
+            print(root[i])
+            [print(j) for j in root[i]]
+            ii += 1
+    tree.write(args.output)
