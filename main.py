@@ -135,7 +135,7 @@ if args.link:
         if root[i].tag.endswith("circle"):
             d = root[i]
             aa = ET.Element("a")
-            aa.set("xlink:href", "./" + str(const.d1[c[ii][0]]) + str(const.d2[c[ii][1]]))
+            aa.set("xlink:href", "./" + args.input + str(const.d1[c[ii][0]]) + str(const.d2[c[ii][1]]))
             aa.append(d)
             root[i] = aa
             print(root[i])

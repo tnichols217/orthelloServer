@@ -1,4 +1,5 @@
 var express = require('express');
+const https = require('https');
 const { exec } = require("child_process");
 const fs = require('fs');
 var app = express();
@@ -23,9 +24,9 @@ app.get('*', function (req, res) {
     }
 })
 
-var server = app.listen(8080, function () {
-    var host = server.address().address
-    var port = server.address().port
-
-    console.log("Example app listening at http://%s:%s", host, port)
-})
+https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/heyo.ydns.eu/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/heyo.ydns.eu/fullchain.pem'),
+    ca: fs.readFileSync('/etc/letsencrypt/live/heyo.ydns.eu/chain.pem')
+}, app)
+.listen(8080);
