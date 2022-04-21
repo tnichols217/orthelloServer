@@ -41,19 +41,13 @@ var game = (ID, res) => {
         var uu = uuid.v4()
         res.redirect("./" + ID[0] + "/" + uu + '/')
         activeGames[uu] = ""
-        console.log(activeGames)
         return
     }
     if (ID.length > 2) {
-
-        console.log(activeGames)
-
-        console.log(ID[1])
         if (!(ID[1] in activeGames)) {
             console.log("unknown UUID")
             res.redirect("..")
         }
-        console.log(activeGames[ID[1]])
         if (ID[2].length >= activeGames[ID[1]].length) {
             activeGames[ID[1]] = ID[2]
             returnBoard(ID[2], res)
@@ -69,7 +63,7 @@ var mapDirs = {
     "g": game
 }
 
-app.get('*', (req, res) => {
+var resolve = (req, res) => {
     ID = req.params['0'].slice(1)
     args = req.params['0'].split("/")
     args.shift()
@@ -87,7 +81,9 @@ app.get('*', (req, res) => {
     }
 
 
-})
+}
+
+app.get('*', resolve)
 
 https.createServer({
     key: fs.readFileSync('/etc/letsencrypt/live/heyo.ydns.eu/privkey.pem'),
