@@ -82,12 +82,12 @@ b[3][4] = 2
 b[4][4] = 1
 
 
-args.input = parse_input(args.input)
+input = parse_input(args.input)
 
 # simulate game
 
-for i in range(len(args.input)):
-    j, k = args.input[i]
+for i in range(len(input)):
+    j, k = input[i]
     c = 1 if i % 2 == 0 else 2
     if j < 8 and k < 8 and b[j][k] == 0:
         b[j][k] = c
@@ -121,8 +121,10 @@ if args.png:
 
 if args.link:
     c = []
+    f = []
     for i in range(const.size):
         for j in range(const.size):
+            f.append((i, j))
             if b[i][j] != 0:
                 c.append((i, j))
     tree = ET.parse(args.output)
@@ -132,13 +134,14 @@ if args.link:
     root.set('xmlns:xlink', "http://www.w3.org/1999/xlink")
     ii = 0
     for i in range(len(root)):
-        if root[i].tag.endswith("circle"):
-            d = root[i]
-            aa = ET.Element("a")
-            aa.set("xlink:href", "./" + args.input + str(const.d1[c[ii][0]]) + str(const.d2[c[ii][1]]))
-            aa.append(d)
-            root[i] = aa
-            print(root[i])
-            [print(j) for j in root[i]]
+        if root[i].tag.endswith("rect"):
+            if len(c) == 0 or f[ii] != c[0]:
+                d = root[i]
+                aa = ET.Element("a")
+                aa.set("xlink:href", "./" + args.input + str(const.d1[f[ii][0]]) + str(const.d2[f[ii][1]]))
+                aa.append(d)
+                root[i] = aa
+            else:
+                c = c[1:]
             ii += 1
     tree.write(args.output)
